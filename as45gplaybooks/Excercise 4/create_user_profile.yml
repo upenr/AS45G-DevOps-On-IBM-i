@@ -1,0 +1,17 @@
+---
+- hosts: ibmi
+  gather_facts: no
+  collections:
+    - ibm.power_ibmi
+  tasks:
+    - name: Create a user profile
+      ibmi_user_and_group:
+        operation: 'create'
+        user: 'as45gxx'
+        password: 'as45gxx' 
+        user_class: '*SECOFR'
+        expire : '*NO' 
+      register: user_result
+    - debug:
+        var: user_result
+...

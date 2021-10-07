@@ -1,0 +1,19 @@
+---
+# Delete IBM i VM info from OpenStack
+- name: Delete an IBM i VM
+  os_server:
+    auth:
+      auth_url: https://{{ ansible_ssh_host }}:5000/v3
+      username: '{{ ansible_ssh_user }}'
+      password: '{{ ansible_ssh_pass }}'
+      project_name: '{{ project }}'
+      project_domain_name: '{{ project_domain }}'
+      user_domain_name: '{{ user_domain }}'
+    name: '{{ vm_name }}'
+    verify: '{{ verify_cert }}'
+    state: '{{vm_state}}'
+    timeout: '{{ deploy_timeout }}'
+  register: server_info
+...
+
+

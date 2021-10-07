@@ -1,0 +1,21 @@
+---
+powervc_host: "10.8.29.101"
+powervc_admin: "root"
+powervc_admin_password: "abc123"
+project: ibm-default
+project_domain: Default
+user_domain: Default
+vm_name: "VM-{{ build_lib }}"
+verify_cert: false
+image_name_or_id: "AS45G01_9860610"
+nic_list: [{ 'net-name': 'Network1' }]
+flavor_name_or_id: tiny
+deploy_timeout: 300
+deploy_userdata: |
+  {%- raw -%}#!/bin/sh
+  mkdir /home/BUILDER
+  system "CRTUSRPRF USRPRF(BUILDER) PASSWORD(abc123) USRCLS(*SECOFR) ASTLVL(*SYSVAL) TEXT('Ansible CICD build') HOMEDIR('/home/BUILDER')"
+  system "chgtcpsvr svrspcval(*sshd) autostart(*yes)"
+  system "strtcpsvr *sshd"
+  {% endraw %}
+...

@@ -1,0 +1,24 @@
+...
+- pause:
+    prompt: Please confirm you want to cleanup! Press enter to continue
+
+- name: remove "{{ local_workspace }}"
+  file:
+    path: '{{ local_workspace }}'
+    state: 'absent'
+  ignore_errors: true
+
+- name: Destroy VM when provision
+  os_server:
+    auth:
+      auth_url: https://{{ ansible_ssh_host }}:5000/v3
+      username: '{{ ansible_ssh_user }}'
+      password: '{{ ansible_ssh_pass }}'
+      project_name: '{{ project }}'
+      project_domain_name: '{{ project_domain }}'
+      user_domain_name: '{{ user_domain }}'
+    name: '{{ vm_name }}'
+    state: 'absent'
+  delegate_to: 'powervc'
+  when: provision
+---

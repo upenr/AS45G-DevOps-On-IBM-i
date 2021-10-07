@@ -1,0 +1,17 @@
+---
+- hosts: powervs_server:ibmi
+  gather_facts: no
+  collections:
+    - ibm.power_ibmi
+
+  tasks:
+    - name: query ptf
+      ibmi_fix:
+        operation: 'query'
+        fix_list: "{{ ptfs_list }}"
+      register: query
+
+    - name: print ptf not installed
+      debug:
+        var: query.ptf_not_on_system_list
+...

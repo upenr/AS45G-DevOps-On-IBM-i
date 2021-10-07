@@ -1,0 +1,12 @@
+---
+# defaults value for delete an IBM i VM
+project: ibm-default
+project_domain: Default
+user_domain: Default
+verify_cert: false
+deploy_timeout: 300
+availability_zone_name: 'Default Group'
+...
+ 
+
+

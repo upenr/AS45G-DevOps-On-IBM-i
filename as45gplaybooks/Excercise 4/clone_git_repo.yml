@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  tasks:
+    - name: git clone from source repository
+      git:
+        repo: 'https://github.ibm.com/uperajan/AS45G-DevOps-On-IBMi.git'
+        dest: /home/qsecofr/as45gxx
+        version: master
+...

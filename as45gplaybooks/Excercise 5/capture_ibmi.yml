@@ -1,0 +1,14 @@
+---
+- hosts: powervc_server
+  gather_facts: no
+
+  roles:
+    - role: display_vm_info_via_powervc
+      vars:
+       vm_name: '{{ibmivmname}}'
+
+    - role: capture_server_via_powervc
+      vars:
+        image_name: '{{ibmivmimage}}'
+        vm_name: '{{ibmivmname}}'
+...

@@ -1,0 +1,5 @@
+---
+- hosts: localhost
+  remote_user: root
+  roles:
+    - /home/qsecofr/as45groles/delete_vm_via_powervc

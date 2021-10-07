@@ -1,0 +1,8 @@
+---
+- block:
+  - name: call CL command to build application
+    ibm.power_ibmi.ibmi_cl_command:
+      cmd: CRTBNDCPP PGM({{ build_lib }}/SENDMSG) SRCSTMF('{{ build_path }}/sendMsg.c')
+  when: build_with_stmfs
+  delegate_to: 'build_system'
+...

@@ -1,0 +1,11 @@
+...
+- name: run PGM built with STMFs
+  ibm.power_ibmi.ibmi_cl_command:
+    cmd: CALL {{ build_lib }}/SENDMSG
+    joblog: true
+  register: callpgm
+  when: build_with_stmfs
+- name: PGM output
+  debug:
+    var: callpgm.job_log[0].MESSAGE_TEXT
+---
