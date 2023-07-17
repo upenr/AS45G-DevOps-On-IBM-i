@@ -3,7 +3,7 @@
   tasks:
     - name: git clone from source repository
       git:
-        repo: 'https://github.ibm.com/uperajan/AS45G-DevOps-On-IBMi.git'
+        repo: 'https://github.com/upenr/AS45G-DevOps-On-IBM-i.git'
         dest: /home/qsecofr/as45gxx
         version: master
 ...
