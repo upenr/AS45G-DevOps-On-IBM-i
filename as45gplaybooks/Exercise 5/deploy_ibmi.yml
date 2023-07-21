@@ -1,0 +1,65 @@
+---
+- hosts: powervc_server
+  gather_facts: False
+  vars_prompt:
+     - name: ibmivmname
+       prompt: "Enter a name for IBM i VM"
+       private: no
+     - name: ibmimage
+       prompt: "Enter image's name for IBM i VM"
+       private: no
+     - name: template
+       prompt: "Enter a compute template"
+       private: no
+     - name: networks
+       prompt: "Enter a network VLAN"
+       private: no
+     - name: ibmikey
+       prompt: "Enter the keypair"
+       private: no
+
+  tasks:
+    - name: Deploy a new VM
+      os_server:
+        auth:
+          auth_url: https://{{ ansible_ssh_host }}:5000/v3
+          username: '{{ ansible_ssh_user }}'
+          password: '{{ ansible_ssh_pass }}'
+          project_name: ibm-default
+          project_domain_name: Default
+          user_domain_name: Default
+        name: '{{ ibmivmname }}'
+        image: '{{ ibmimage }}'
+        flavor: '{{ template }}'
+        verify: False
+        nics: [{"net-name": "{{networks}}"}]
+        timeout: 300
+        userdata: |
+          {%- raw -%}#!/bin/sh
+          system "CHGUSRPRF USRPRF(QCIUSER) PASSWORD(abc123) STATUS(*ENABLED) USRCLS(*SECOFR) SPCAUT(*ALLOBJ *IOSYSCFG *JOBCTL *SECADM *AUDIT *SERVICE *SPLCTL *SAVSYS)"
+          system "chgtcpsvr svrspcval(*sshd) autostart(*yes)"
+          system "strtcpsvr *sshd"
+          system "strtcpsvr *telnet"
+          {% endraw %}
+        key_name: '{{ ibmikey }}'
+      register: server_info
+    
+    - name: add {{ ibmivmname }} to ansible in-memory inventory
+      add_host:
+        name: as45g_system
+        ansible_ssh_host: '{{ server_info.openstack.public_v4 }}'
+        ansible_user: QCIUSER
+        ansible_ssh_pass: abc123
+        groups: as45g_systems
+        ansible_ssh_extra_args: -o StrictHostKeyChecking=no
+        ansible_python_interpreter: /QOpensys/pkgs/bin/python3
+
+    - name: wait until {{ ibmivmname }} is up and ssh ready
+      wait_for_connection:
+        sleep: 10
+        timeout: 1800
+      delegate_to: "as45g_system"
+
+    - debug:
+        msg: "{{server_info.openstack.public_v4}}"
+...

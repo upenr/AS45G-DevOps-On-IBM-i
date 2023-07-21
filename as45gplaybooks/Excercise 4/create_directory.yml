@@ -1,8 +1,0 @@
----
-- hosts: ibmi
-  tasks:
-   - name: Create a directory
-     file:
-      path: /home/as45gxx
-      state: directory
-...

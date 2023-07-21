@@ -1,8 +1,0 @@
----
-- hosts: localhost
-  tasks:
-    - name: git clone from source repository
-      git:
-        repo: 'https://github.com/upenr/AS45G-DevOps-On-IBM-i.git'
-        dest: /home/qsecofr/as45gxx
-...

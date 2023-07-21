@@ -1,0 +1,46 @@
+---
+- hosts: powervs_server:ibmi
+  gather_facts: no
+  collections:
+    - ibm.power_ibmi
+
+  tasks:
+    - name: create a directory
+      raw: mkdir -p /as45gptf
+          
+    - name: download a PTF
+      ibmi_download_fix:
+        ptf_id: "{{ ptf_miss }}"
+        image_directory: '/as45gptf'
+        delivery_format: '*IMAGE'
+        wait: false
+      register: ptf_downloaded
+      failed_when: ptf_downloaded.rc != 0
+
+    - name: determine if the downloading is completed.
+      ibmi_download_fix_status:
+        order_list: "{{ ptf_downloaded.order_id }}"
+      register: ds     
+      failed_when: ds.rc != 0
+      until: ds.status[0]['download_status'] == "DOWNLOADED"
+      retries: 16
+      delay: 30
+    
+    - name: apply PTF using bin file
+      ibmi_fix_imgclg:
+        src: '/as45gptf'
+        apply_type: "*IMMDLY"
+      register: apply_result
+      ignore_errors: true
+
+    - name: verify that ptf has been installed
+      ibmi_sql_query:
+        sql: "SELECT PTF_PRODUCT_ID, PTF_IDENTIFIER, PTF_IPL_ACTION, PTF_LOADED_STATUS, PTF_IPL_REQUIRED
+        FROM QSYS2.PTF_INFO
+        WHERE PTF_IDENTIFIER = '{{ptf_miss}}';"
+      register: ptf_status
+
+    - name: display ptf applied  
+      debug:
+        var: ptf_status.row[0].PTF_LOADED_STATUS
+...
