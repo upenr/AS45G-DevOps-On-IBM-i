@@ -1,4 +1,4 @@
-...
+---
 - pause:
     prompt: Please confirm you want to cleanup! Press enter to continue
 
@@ -21,4 +21,4 @@
     state: 'absent'
   delegate_to: 'powervc'
   when: provision
----
+...
